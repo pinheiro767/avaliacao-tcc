@@ -2,232 +2,396 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parecer Técnico — Rafaela</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#123b63">
+  <meta name="description" content="Parecer técnico em formato PWA para revisão do artigo da Rafaela segundo a RBEM.">
+  <link rel="manifest" href="manifest.json">
+  <title>Parecer RBEM — Rafaela</title>
   <style>
-    body { font-family: 'DM Sans', sans-serif; background:#f8fafc; color:#1e293b; }
-    .literata { font-family:'Literata', serif; }
-    .card { background:#fff; border:1px solid #e2e8f0; border-radius:20px; box-shadow:0 8px 24px rgba(15,23,42,.06); }
-    .sec-title { color:#0f2b46; font-weight:700; font-size:1.25rem; }
-    .callout-blue { background:#eff6ff; border-left:4px solid #2563eb; }
-    .callout-red { background:#fef2f2; border-left:4px solid #dc2626; }
-    .callout-green { background:#ecfdf5; border-left:4px solid #10b981; }
-    .sample { background:#f8fafc; border:1px dashed #94a3b8; border-radius:14px; padding:16px; white-space:pre-wrap; line-height:1.8; }
-    @media print {
-      .no-print { display:none !important; }
-      body { background:#fff; }
-      .card { box-shadow:none; }
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --ink:#1f2a37;
+      --muted:#64748b;
+      --brand:#123b63;
+      --brand-2:#2f6fb5;
+      --line:#dbe4ef;
+      --ok:#0f766e;
+      --ok-bg:#ecfdf5;
+      --warn:#9a6700;
+      --warn-bg:#fffbeb;
+      --bad:#b42318;
+      --bad-bg:#fef3f2;
+      --shadow:0 10px 30px rgba(18,59,99,.08);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    body{min-height:100vh}
+    .page{max-width:1200px;margin:0 auto;padding:16px}
+    .hero{background:linear-gradient(135deg,var(--brand),#184f84 55%,var(--brand-2));color:#fff;border-radius:28px;padding:28px 22px;box-shadow:var(--shadow)}
+    .hero h1{margin:0;font-size:clamp(1.6rem,3vw,2.5rem);line-height:1.1}
+    .hero p{margin:10px 0 0;color:#dbeafe;max-width:900px;line-height:1.7}
+
+    .grid-top{display:grid;grid-template-columns:1.45fr .95fr;gap:16px;margin-top:16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .card-inner{padding:22px}
+    .label{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    .score-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+    .score{min-width:160px;background:var(--warn-bg);border:1px solid #f5d57a;border-radius:24px;padding:18px 22px;text-align:center}
+    .score .n{font-size:3.4rem;font-weight:900;line-height:1;color:var(--warn)}
+    .score .t{margin-top:6px;color:#7c5e10;font-size:.9rem;font-weight:700}
+    .callout{border-left:5px solid var(--brand-2);background:#eff6ff;padding:14px 16px;border-radius:0 16px 16px 0;margin-top:14px;line-height:1.75}
+    .callout.ok{background:var(--ok-bg);border-left-color:#10b981}
+    .callout.warn{background:var(--warn-bg);border-left-color:#f59e0b}
+    .callout.bad{background:var(--bad-bg);border-left-color:#ef4444}
+
+    .score-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+    .mini{border:1px solid var(--line);background:#fafcff;border-radius:18px;padding:14px}
+    .mini strong{display:block;font-size:1.4rem;color:var(--brand)}
+    .mini span{display:block;font-size:.92rem;color:var(--muted);margin-top:4px}
+
+    .tabs{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+    .tabbar{display:flex;gap:10px;overflow:auto;padding:16px;border-bottom:1px solid var(--line);scrollbar-width:thin;background:#fbfdff}
+    .tabbtn{appearance:none;border:1px solid #cdd8e5;background:#fff;color:#334155;padding:11px 16px;border-radius:999px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s}
+    .tabbtn:hover{background:#f8fafc}
+    .tabbtn.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+    .panels{padding:18px}
+    .panel{display:none;animation:fade .22s ease}
+    .panel.active{display:block}
+    @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    h2.section-title{margin:0 0 14px;font-size:1.3rem;color:var(--brand)}
+    p{line-height:1.82;margin:0 0 12px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .two-col-refs{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+    .bullet{margin:0;padding-left:20px;line-height:1.8}
+    .bullet li{margin-bottom:8px}
+    .sample{background:#f8fafc;border:1px dashed #9fb1c5;border-radius:18px;padding:16px;white-space:pre-wrap;line-height:1.9;font-family:Georgia, 'Times New Roman', serif;color:#344256}
+    .editable{width:100%;min-height:220px;border:1px solid var(--line);border-radius:16px;padding:14px 16px;font:inherit;line-height:1.8;resize:vertical;background:#fff}
+    .editable.small{min-height:140px}
+    .hint{font-size:.92rem;color:var(--muted);line-height:1.7}
+
+    .ref-item{border:1px solid var(--line);border-radius:18px;padding:14px 16px;background:#fff;margin-bottom:12px;line-height:1.75}
+    .ref-item .num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;background:#dbeafe;color:#1d4ed8;font-weight:800;margin-right:8px;font-size:.9rem}
+
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:14px}
+    .btn{appearance:none;border:none;border-radius:14px;padding:12px 16px;font-weight:800;cursor:pointer;transition:.2s}
+    .btn.primary{background:var(--brand);color:#fff}
+    .btn.secondary{background:#e2e8f0;color:#1f2937}
+    .btn:hover{transform:translateY(-1px)}
+
+    .footer-note{font-size:.9rem;color:var(--muted);text-align:center;padding:18px 0 6px}
+
+    @media (max-width: 920px){
+      .grid-top,.two-col,.two-col-refs{grid-template-columns:1fr}
+      .score-grid{grid-template-columns:1fr 1fr}
+      .page{padding:12px}
+      .hero{padding:22px 18px}
+    }
+
+    @media (max-width: 640px){
+      .score-grid{grid-template-columns:1fr}
+      .card-inner,.panels{padding:16px}
+      .tabbar{padding:12px}
+      .tabbtn{padding:10px 14px;font-size:.92rem}
+      .score .n{font-size:3rem}
+    }
+
+    @media print{
+      body{background:#fff}
+      .no-print{display:none !important}
+      .page{max-width:none;padding:0}
+      .hero,.card,.tabs{box-shadow:none}
+      .hero{border-radius:0}
+      .tabs{border:none}
+      .panel{display:block !important;page-break-inside:avoid;margin-bottom:22px}
+      .panels{padding:0}
+      .tabbar{display:none}
     }
   </style>
 </head>
 <body>
-  <header class="bg-gradient-to-r from-[#0f2b46] via-[#18456f] to-[#2b6cb0] text-white">
-    <div class="max-w-6xl mx-auto px-6 py-8">
-      <h1 class="text-3xl font-bold">Parecer Técnico do Artigo da Rafaela</h1>
-      <p class="text-blue-100 mt-2">Avaliação do manuscrito segundo as normas da RBEM, com orientações de reescrita e reorganização</p>
-    </div>
-  </header>
-
-  <main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
-
-    <section class="card p-6">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <p class="text-sm text-slate-500">Avaliação técnica</p>
-          <h2 class="text-2xl font-bold text-[#0f2b46]">Minha nota final para o manuscrito: 8,0</h2>
-          <p class="mt-2 text-slate-600">Considero que o trabalho está bom em conteúdo, tem tema atual e relevante, mas ainda precisa de ajustes estruturais e editoriais importantes para ficar adequado à Revista Brasileira de Educação Médica.</p>
-        </div>
-        <div class="bg-amber-50 border border-amber-200 rounded-2xl px-6 py-5 text-center min-w-[170px]">
-          <div class="text-sm font-semibold text-amber-800">Nota</div>
-          <div class="text-5xl font-bold text-amber-700 leading-none mt-2">8,0</div>
-          <div class="text-xs text-amber-700 mt-2">Bom, com correções necessárias</div>
-        </div>
-      </div>
+  <div class="page">
+    <section class="hero">
+      <div class="label" style="color:#bfdbfe">Parecer técnico em formato PWA</div>
+      <h1>Parecer do artigo da Rafaela — versão para ajustes e exportação</h1>
+      <p>
+        Organizei a avaliação em abas, deixei a nota final em <strong>8,0</strong>, expliquei de onde ela vem, indiquei que o manuscrito tem <strong>chance de ser aceito após submissão</strong> desde que as correções estruturais e formais sejam realizadas, e preparei modelos iniciais de escrita para Introdução, Método, Resultados, Discussão e Conclusões. Também deixei as referências em ordem sugerida no padrão Vancouver, com alerta para conferência final.
+      </p>
     </section>
 
-    <section class="card p-6">
-      <h2 class="sec-title mb-4">1. Minha avaliação geral</h2>
-      <div class="callout-blue rounded-xl p-4">
-        <p class="literata text-[15px]">
-          Ao analisar o artigo da Rafaela, entendo que o tema escolhido é pertinente, atual e tem potencial para dialogar com a área de educação médica, especialmente pela aproximação entre Inteligência Artificial, ensino de Anatomia e Histologia e transformação digital no ensino em saúde. O conteúdo mostra leitura, organização temática e boa intenção de construir uma revisão sobre um tema em expansão. No entanto, no formato atual, o manuscrito ainda está com estrutura de TCC/monografia e não com formato de artigo científico pronto para submissão à RBEM.
-        </p>
+    <section class="grid-top">
+      <article class="card">
+        <div class="card-inner">
+          <div class="score-wrap">
+            <div>
+              <div class="label">Síntese da avaliação</div>
+              <h2 style="margin:6px 0 0;color:var(--brand);font-size:1.9rem">Minha nota final para o manuscrito: 8,0</h2>
+              <p style="margin-top:10px">
+                Eu atribuo nota 8,0 porque reconheço a qualidade do tema, a pertinência para a educação médica, a boa organização geral do conteúdo e o potencial real de aproveitamento do texto. Ao mesmo tempo, não atribuo nota maior porque ainda existem problemas objetivos de estrutura, método, sistema de citação e apresentação das referências.
+              </p>
+            </div>
+            <div class="score" aria-label="Nota final 8,0">
+              <div class="n">8,0</div>
+              <div class="t">Bom, com correções necessárias</div>
+            </div>
+          </div>
+
+          <div class="score-grid">
+            <div class="mini"><strong>9,0</strong><span>Tema e relevância para a educação médica</span></div>
+            <div class="mini"><strong>8,5</strong><span>Coerência temática e organização do conteúdo</span></div>
+            <div class="mini"><strong>7,5</strong><span>Escrita acadêmica e clareza geral</span></div>
+            <div class="mini"><strong>6,5</strong><span>Adequação às normas da RBEM</span></div>
+            <div class="mini"><strong>6,5</strong><span>Descrição metodológica</span></div>
+            <div class="mini"><strong>6,0</strong><span>Citações e referências no padrão Vancouver</span></div>
+          </div>
+
+          <div class="callout warn">
+            <strong>Minha leitura final:</strong> o manuscrito não está pronto para submissão no estado atual, mas tem boa chance de ser aceito após submissão <strong>desde que</strong> sejam respeitados os passos de correção apontados neste parecer: reestruturação para o modelo da RBEM, separação adequada do método, padronização integral das citações, reorganização das referências e revisão final do resumo.
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="label">Passos críticos antes da submissão</div>
+          <ul class="bullet">
+            <li>Transformar a estrutura de TCC em formato de artigo científico para a RBEM.</li>
+            <li>Retirar o método da introdução e criar a seção <strong>MÉTODO</strong>.</li>
+            <li>Organizar o texto em <strong>RESULTADOS</strong> e <strong>DISCUSSÃO</strong>.</li>
+            <li>Corrigir todas as citações para o modelo Vancouver numérico sobrescrito.</li>
+            <li>Reordenar as referências pela ordem de aparecimento no texto.</li>
+            <li>Reformatar o resumo em estrutura exigida pela revista.</li>
+            <li>Revisar a versão final para anonimização, se necessário para avaliação cega.</li>
+          </ul>
+
+          <div class="callout ok">
+            <strong>Chance de aceite:</strong> eu entendo que o artigo tem chance real de prosseguir após submissão, desde que as correções formais e estruturais sejam feitas com cuidado. O problema principal hoje não é o tema, e sim o formato.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="tabs card">
+      <div class="tabbar no-print">
+        <button class="tabbtn active" data-tab="tab1">1. Visão geral</button>
+        <button class="tabbtn" data-tab="tab2">2. Introdução</button>
+        <button class="tabbtn" data-tab="tab3">3. Método</button>
+        <button class="tabbtn" data-tab="tab4">4. Resultados</button>
+        <button class="tabbtn" data-tab="tab5">5. Discussão</button>
+        <button class="tabbtn" data-tab="tab6">6. Conclusões</button>
+        <button class="tabbtn" data-tab="tab7">7. Citações</button>
+        <button class="tabbtn" data-tab="tab8">8. Referências</button>
+        <button class="tabbtn" data-tab="tab9">9. PDF</button>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-4 mt-5">
-        <div class="callout-green rounded-xl p-4">
-          <h3 class="font-bold text-emerald-800 mb-2">O que está bom</h3>
-          <p class="literata text-sm leading-7">
-            O tema é muito pertinente. A relação entre IA, morfologia humana e educação médica é atual. A autora conseguiu reunir referências reais e recentes, e o texto tem boa fluidez em vários trechos. Há também um esforço visível de organizar o assunto em eixos: ensino de anatomia e histologia, aplicações da IA e impactos/perspectivas.
+      <div class="panels">
+        <section id="tab1" class="panel active">
+          <h2 class="section-title">1. Minha avaliação geral</h2>
+          <p>
+            Ao analisar o artigo da Rafaela, considero que o tema escolhido é pertinente, atual e relevante para a área de educação médica, especialmente por tratar da articulação entre Inteligência Artificial, ensino de Anatomia Humana, Histologia e transformação digital no ensino em saúde. Vejo mérito no conteúdo e considero que a autora conseguiu organizar o manuscrito em eixos compreensíveis, o que contribui para a leitura.
           </p>
-        </div>
-        <div class="callout-red rounded-xl p-4">
-          <h3 class="font-bold text-red-800 mb-2">O que ainda precisa ser corrigido</h3>
-          <p class="literata text-sm leading-7">
-            O manuscrito ainda não está adequado às normas da RBEM. A estrutura está fora do padrão da revista, o método está inserido na introdução, as citações não estão totalmente padronizadas em Vancouver, há mistura de autor-data com numeração, existe problema na forma de apresentação das referências, e o texto precisa ser reorganizado para sair do formato de TCC e assumir forma de artigo científico.
+          <p>
+            Ao mesmo tempo, observo que o texto ainda está em formato de TCC/monografia e não no formato de artigo científico exigido pela RBEM. Por isso, minha nota 8,0 reconhece o valor do conteúdo, mas também marca com clareza que ainda existem correções necessárias antes da submissão.
           </p>
-        </div>
+          <div class="two-col">
+            <div class="callout ok">
+              <strong>O que está bom</strong><br>
+              Tema atual; conteúdo aproveitável; referências reais; boa organização temática; potencial de publicação após revisão.
+            </div>
+            <div class="callout bad">
+              <strong>O que ainda precisa de correção</strong><br>
+              Estrutura fora do padrão da revista; método no lugar errado; citações misturadas; referências fora da ordem correta.
+            </div>
+          </div>
+        </section>
+
+        <section id="tab2" class="panel">
+          <h2 class="section-title">2. Introdução</h2>
+          <p>
+            Na introdução, eu vejo que a autora contextualiza bem a importância da Anatomia Humana, apresenta a passagem do ensino tradicional para o cenário digital e introduz a Inteligência Artificial de forma coerente. Isso é positivo. O principal ajuste necessário é retirar do final da introdução tudo aquilo que pertence ao método, porque, no formato da RBEM, a introdução precisa terminar no problema de pesquisa, na relevância e no objetivo do estudo.
+          </p>
+          <p>
+            Minha orientação para a Rafaela é que ela deixe esta seção mais direta, mais objetiva e mais científica, reduzindo frases genéricas e destacando com mais precisão qual lacuna da literatura o artigo pretende discutir.
+          </p>
+          <div class="label">Prévia de introdução para ela continuar</div>
+          <div class="sample" contenteditable="true" data-save="introSample">O ensino da Anatomia Humana ocupa papel central na formação dos profissionais da saúde, pois fornece bases importantes para a compreensão da organização corporal e para o desenvolvimento do raciocínio clínico¹. Nas últimas décadas, esse campo tem sido impactado por mudanças curriculares, metodologias ativas e pela incorporação de tecnologias digitais no processo de ensino-aprendizagem². Nesse contexto, a Inteligência Artificial tem ganhado destaque como recurso com potencial para ampliar a visualização anatômica, personalizar percursos de aprendizagem e apoiar novas estratégias educacionais³.</div>
+          <p class="hint">A Rafaela pode continuar a partir desse parágrafo, mantendo a sequência: contexto → transformação digital → lacuna → objetivo.</p>
+          <div class="label" style="margin-top:14px">Comentários adicionais</div>
+          <textarea class="editable small" data-save="introComments" placeholder="Aqui ela pode escrever observações, ampliar argumentos ou testar novos trechos para a introdução."></textarea>
+        </section>
+
+        <section id="tab3" class="panel">
+          <h2 class="section-title">3. Método</h2>
+          <p>
+            O método é uma das partes que mais precisa de correção. Hoje ele aparece dentro da introdução e isso não está adequado. Além disso, a expressão “levantamento bibliográfico simples” não é a melhor forma de apresentar um método em artigo científico. É preciso nomear o tipo de revisão e informar, com mais clareza, como a busca foi conduzida.
+          </p>
+          <p>
+            Minha recomendação é que a Rafaela apresente o método em uma seção própria, com informação suficiente para o leitor entender a base da revisão: tipo de estudo, bases pesquisadas, descritores, período, critérios de inclusão e exclusão.
+          </p>
+          <div class="label">Prévia de método para ela continuar</div>
+          <div class="sample" contenteditable="true" data-save="methodSample">Trata-se de uma revisão narrativa da literatura. A busca foi realizada nas bases SciELO e Google Scholar, considerando publicações entre 2016 e 2026. Foram utilizados descritores relacionados à Inteligência Artificial, ensino de Anatomia, Histologia e tecnologias educacionais. Foram incluídos estudos com relação direta ao uso de recursos digitais ou de Inteligência Artificial no ensino morfológico, e excluídas publicações duplicadas, textos fora do recorte temporal e trabalhos sem aderência ao tema investigado.</div>
+          <p class="hint">Ela pode continuar daqui acrescentando como selecionou os trabalhos e, se quiser, quantos estudos foram mantidos na análise.</p>
+          <div class="label" style="margin-top:14px">Comentários adicionais</div>
+          <textarea class="editable small" data-save="methodComments" placeholder="Espaço para ela acrescentar observações, mudanças ou reformular o método."></textarea>
+        </section>
+
+        <section id="tab4" class="panel">
+          <h2 class="section-title">4. Resultados</h2>
+          <p>
+            O conteúdo que hoje aparece como “Desenvolvimento” pode ser aproveitado, mas precisa ser redistribuído. Eu entendo que a parte que mostra o que a literatura encontrou sobre ensino de anatomia, tecnologias e aplicações da IA pode ser transformada em <strong>Resultados</strong>. Nessa seção, o ideal é apresentar os achados da revisão de forma organizada por temas.
+          </p>
+          <div class="label">Prévia de resultados para ela continuar</div>
+          <div class="sample" contenteditable="true" data-save="resultsSample">Os estudos analisados indicam que a Inteligência Artificial tem sido aplicada ao ensino de Anatomia e Histologia em diferentes frentes, incluindo plataformas adaptativas, tutores virtuais, modelos tridimensionais inteligentes e sistemas automatizados de análise de imagens. Em conjunto, essas aplicações são descritas na literatura como ferramentas capazes de favorecer a visualização espacial, a personalização da aprendizagem e o acompanhamento do desempenho discente⁴˒⁵.</div>
+          <p class="hint">Ela pode seguir organizando os resultados em subtópicos temáticos, por exemplo: plataformas adaptativas, visualização 3D, análise histológica e avaliação automatizada.</p>
+          <div class="label" style="margin-top:14px">Comentários adicionais</div>
+          <textarea class="editable small" data-save="resultsComments" placeholder="Espaço para ela acrescentar observações, dividir os resultados por categorias e testar novos parágrafos."></textarea>
+        </section>
+
+        <section id="tab5" class="panel">
+          <h2 class="section-title">5. Discussão</h2>
+          <p>
+            A discussão é a parte em que a autora precisa interpretar os achados. No texto atual, essa dimensão aparece, mas ainda misturada ao desenvolvimento. Minha orientação é separar melhor o que são achados da literatura e o que é interpretação crítica. Na discussão, ela deve mostrar o que esses achados significam para o ensino médico, quais são os limites e quais desafios ainda permanecem.
+          </p>
+          <div class="label">Prévia de discussão para ela continuar</div>
+          <div class="sample" contenteditable="true" data-save="discussionSample">Embora os achados apontem benefícios educacionais relevantes, a literatura também destaca limites importantes relacionados à infraestrutura, à formação docente e ao uso ético dessas tecnologias. Isso sugere que a incorporação da Inteligência Artificial no ensino morfológico não deve ser entendida como simples substituição de métodos tradicionais, mas como estratégia complementar que exige planejamento pedagógico e análise crítica⁶.</div>
+          <p class="hint">Ela pode continuar a partir daqui discutindo limites institucionais, desafios pedagógicos, formação docente e questões éticas.</p>
+          <div class="label" style="margin-top:14px">Comentários adicionais</div>
+          <textarea class="editable small" data-save="discussionComments" placeholder="Espaço para ela acrescentar interpretação crítica, comparações entre estudos e implicações para o ensino médico."></textarea>
+        </section>
+
+        <section id="tab6" class="panel">
+          <h2 class="section-title">6. Conclusões</h2>
+          <p>
+            A conclusão da Rafaela está coerente com o tema, mas ainda pode ficar mais direta. Eu orientaria que ela respondesse ao objetivo do estudo, resumisse os principais achados e fechasse o texto de forma objetiva, sem repetir excessivamente a introdução. Também é importante mencionar, ainda que brevemente, limitações e desdobramentos possíveis.
+          </p>
+          <div class="label">Prévia de conclusão para ela continuar</div>
+          <div class="sample" contenteditable="true" data-save="conclusionSample">Com base nos estudos analisados, conclui-se que a Inteligência Artificial apresenta potencial para contribuir com o ensino de Anatomia e Histologia, especialmente ao favorecer a visualização anatômica, a personalização da aprendizagem e o uso de estratégias digitais no contexto formativo. No entanto, sua incorporação ao ensino morfológico deve ocorrer de forma crítica, planejada e articulada às práticas pedagógicas já consolidadas.</div>
+          <p class="hint">Ela pode completar com limitações do estudo e indicação de perspectivas futuras.</p>
+          <div class="label" style="margin-top:14px">Comentários adicionais</div>
+          <textarea class="editable small" data-save="conclusionComments" placeholder="Espaço para ela acrescentar observações finais e testar novas versões da conclusão."></textarea>
+        </section>
+
+        <section id="tab7" class="panel">
+          <h2 class="section-title">7. Citações no padrão RBEM / Vancouver</h2>
+          <div class="callout bad">
+            <strong>Ponto crítico:</strong> embora parte das referências esteja em sobrescrito, o texto mistura sistema autor-data com numeração. Em alguns pontos, também aparece espaço antes do número sobrescrito. Na RBEM, o correto é usar apenas numeração em sobrescrito, sem parênteses, sem espaço antes do número e com a lista final organizada por ordem de aparecimento no texto.
+          </div>
+          <div class="two-col" style="margin-top:14px">
+            <div class="callout bad">
+              <strong>Errado</strong><br>
+              Boff et al. (2020)<br>
+              Xavier et al. (2025)<br>
+              anatomia ¹
+            </div>
+            <div class="callout ok">
+              <strong>Correto</strong><br>
+              O uso de tecnologias digitais favorece a aprendizagem anatômica³.<br>
+              Estudos recentes apontam benefícios³,¹¹.
+            </div>
+          </div>
+          <p style="margin-top:14px">
+            Além disso, embora as referências existam, nem todas estão sendo usadas da forma mais precisa possível no corpo do texto. Em alguns trechos, uma referência real aparece sustentando uma afirmação mais ampla do que o estudo parece cobrir. Isso também deve ser revisto.
+          </p>
+        </section>
+
+        <section id="tab8" class="panel">
+          <h2 class="section-title">8. Referências organizadas em ordem sugerida</h2>
+          <p>
+            Abaixo, deixo as referências em uma ordem sugerida de aparecimento para ajudar na reorganização em Vancouver. Mesmo assim, <strong>ela deve conferir tudo no texto final</strong>, porque a ordem definitiva depende da sequência em que as citações ficarem após a reescrita.
+          </p>
+
+          <div class="two-col-refs">
+            <div>
+              <div class="ref-item"><span class="num">1</span>Souza JPN. Tendências investigativas contemporâneas no ensino-aprendizagem de anatomia humana no Brasil. Rev Bras Educ Med. 2024;48(2):e055.</div>
+              <div class="ref-item"><span class="num">2</span>Boff TC, et al. O uso da tecnologia no ensino da anatomia humana: revisão sistemática da literatura de 2017 a 2020. Medicina (Ribeirão Preto). 2020;53(4):447-455.</div>
+              <div class="ref-item"><span class="num">3</span>Xavier SPS, et al. Uso da Tecnologia no Ensino da Anatomia Humana: Uma Overview. Rev Estud Interdiscip. 2025;7(2):1-14.</div>
+              <div class="ref-item"><span class="num">4</span>Costa RDA, Santos AMV, Lopes PTC. Metodologias ativas com tecnologias digitais de informação e comunicação no ensino e aprendizagem de anatomia humana. Cuad Educ Desarro. 2023;15(10):11054-11072.</div>
+              <div class="ref-item"><span class="num">5</span>Ribeiro IAL, et al. Metodologias de Ensino de Anatomia Humana: Revisão Integrativa. Rev Enferm Atual In Derme. 2024;98(3).</div>
+              <div class="ref-item"><span class="num">6</span>Roncato PA, et al. Uso de tecnologias no ensino de anatomia humana em cursos da saúde. Res Soc Dev. 2022;11(16):e520111638426.</div>
+            </div>
+            <div>
+              <div class="ref-item"><span class="num">7</span>Santos AJC, et al. A revolução da inteligência artificial na interpretação anatômica: transformações no ensino e na prática médica. Biosciences and Health. 2024;2:1-7.</div>
+              <div class="ref-item"><span class="num">8</span>Abadia HR, et al. Inteligência Artificial Otimizando Práticas Médicas Com Enfoque Na Anatomia Humana. Epitaya E-books. 2024;1(60):35-48.</div>
+              <div class="ref-item"><span class="num">9</span>Rosa BB, et al. Metodologias de ensino aplicadas à Anatomia Humana: uma revisão narrativa. Rev Delos. 2025;18(71):e6856.</div>
+              <div class="ref-item"><span class="num">10</span>Lucena JD, et al. Uso de modelo anatômico de baixo custo de articulação intervertebral no ensino de anatomia do aparelho locomotor. Cad Pedagógico. 2025;22(5):e14860.</div>
+              <div class="ref-item"><span class="num">11</span>Andrade JCT, et al. Uso de Metodologia Ativa no Ensino de Anatomia Humana. Rev Geopolítica. 2026;17(1):e1235.</div>
+            </div>
+          </div>
+
+          <div class="callout warn" style="margin-top:14px">
+            <strong>Observação:</strong> a referência 11 existe, mas é a mais sensível editorialmente, porque está em periódico de escopo menos esperado para a área. Se houver possibilidade, vale substituir por um artigo mais diretamente ligado à educação médica ou ao ensino de anatomia.
+          </div>
+        </section>
+
+        <section id="tab9" class="panel">
+          <h2 class="section-title">9. Exportar em PDF</h2>
+          <p>
+            Esta versão já está organizada para que a Rafaela possa ler as orientações, escrever diretamente nos campos acima e, ao final, exportar tudo em PDF. O conteúdo digitado é salvo no próprio navegador deste dispositivo.
+          </p>
+
+          <div class="toolbar no-print">
+            <button class="btn secondary" id="clearBtn">Limpar textos editáveis</button>
+            <button class="btn primary" onclick="window.print()">Gerar PDF</button>
+          </div>
+
+          <div class="callout ok">
+            <strong>Minha orientação final para a Rafaela:</strong> o artigo tem chance de prosseguir após submissão, desde que as correções estruturais, metodológicas e formais apontadas neste parecer sejam efetivamente realizadas. O tema tem valor, e o conteúdo pode ser aproveitado.
+          </div>
+        </section>
       </div>
     </section>
 
-    <section class="card p-6">
-      <h2 class="sec-title mb-4">2. O que precisa mudar na estrutura</h2>
-      <p class="literata text-[15px] leading-8">
-        No formato atual, o texto está organizado como <strong>Introdução, Desenvolvimento e Conclusão</strong>. Para a RBEM, isso não é o ideal para artigo de revisão. A estrutura mais adequada seria:
-      </p>
-      <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mt-4">
-        <p class="font-semibold text-slate-700">Estrutura recomendada:</p>
-        <p class="literata text-sm mt-2 leading-8">
-          INTRODUÇÃO<br>
-          MÉTODO<br>
-          RESULTADOS<br>
-          DISCUSSÃO<br>
-          CONCLUSÕES OU CONSIDERAÇÕES FINAIS<br>
-          REFERÊNCIAS
-        </p>
-      </div>
-      <p class="literata text-[15px] leading-8 mt-4">
-        Além disso, o manuscrito não deve manter elementos de TCC, como sumário e anexo. Esses elementos precisam ser retirados da versão final destinada à revista.
-      </p>
-    </section>
+    <p class="footer-note">PWA de apoio à revisão do manuscrito — versão pronta para instalação e exportação em PDF.</p>
+  </div>
 
-    <section class="card p-6">
-      <h2 class="sec-title mb-4">3. Introdução</h2>
-      <p class="literata text-[15px] leading-8">
-        Na introdução, vejo que a Rafaela consegue contextualizar bem a importância da Anatomia Humana, discutir os métodos tradicionais e introduzir a ideia de transformação digital e Inteligência Artificial. Isso é positivo. O problema principal é que a introdução vai além do que deveria e termina incorporando parte do método. Na RBEM, a introdução deve contextualizar o problema, mostrar a relevância, apresentar a lacuna e terminar com o objetivo. O método deve ficar em seção própria.
-      </p>
-      <p class="literata text-[15px] leading-8 mt-3">
-        Para melhorar essa parte, eu orientaria a Rafaela a deixar a introdução mais enxuta, mais direta e mais científica. Ela pode reduzir frases muito genéricas e reforçar a pergunta central do estudo. Também seria importante explicitar melhor qual lacuna da literatura ela quer discutir.
-      </p>
+  <script>
+    const STORAGE_KEYS = [
+      'introSample','introComments','methodSample','methodComments','resultsSample','resultsComments',
+      'discussionSample','discussionComments','conclusionSample','conclusionComments'
+    ];
 
-      <h3 class="font-bold text-slate-700 mt-5 mb-2">Amostra de como ela pode começar a introdução</h3>
-      <div class="sample literata text-sm">
-O ensino da Anatomia Humana ocupa papel central na formação dos profissionais da saúde, pois contribui para a compreensão da organização corporal e para o desenvolvimento do raciocínio clínico¹. Nas últimas décadas, esse campo tem sido impactado por mudanças curriculares, metodologias ativas e pela incorporação de tecnologias digitais no processo de ensino-aprendizagem². Nesse contexto, a Inteligência Artificial tem ganhado destaque como recurso com potencial para ampliar a visualização anatômica, personalizar percursos de aprendizagem e apoiar novas estratégias educacionais³.
-      </div>
-    </section>
+    document.querySelectorAll('.tabbtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tabbtn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+    });
 
-    <section class="card p-6">
-      <h2 class="sec-title mb-4">4. Método</h2>
-      <p class="literata text-[15px] leading-8">
-        O método é uma das partes que mais precisa ser ajustada. Hoje ele aparece no final da introdução, e isso não está adequado. Além disso, a expressão “levantamento bibliográfico simples” não é a melhor formulação para artigo científico. O método precisa dizer com clareza que tipo de revisão foi feita, quais bases foram usadas, quais descritores foram considerados, qual foi o recorte temporal e quais critérios foram adotados para incluir ou excluir estudos.
-      </p>
-      <p class="literata text-[15px] leading-8 mt-3">
-        Minha orientação é que essa parte seja escrita de forma objetiva, sem exagero, mas com clareza suficiente para que o leitor entenda como a revisão foi conduzida. Mesmo que seja uma revisão narrativa, isso precisa aparecer de forma mais organizada.
-      </p>
+    document.querySelectorAll('[data-save]').forEach(el => {
+      const key = el.dataset.save;
+      const saved = localStorage.getItem(key);
+      if(saved !== null){
+        if(el.tagName === 'TEXTAREA') el.value = saved;
+        else el.textContent = saved;
+      }
 
-      <h3 class="font-bold text-slate-700 mt-5 mb-2">Amostra de como ela pode iniciar o método</h3>
-      <div class="sample literata text-sm">
-Trata-se de uma revisão narrativa da literatura. A busca foi realizada nas bases SciELO e Google Scholar, considerando publicações entre 2016 e 2026. Foram utilizados descritores relacionados à Inteligência Artificial, ensino de Anatomia, Histologia e tecnologias educacionais. Foram incluídos estudos com relação direta ao uso de recursos digitais ou de Inteligência Artificial no ensino morfológico, e excluídas publicações duplicadas, textos fora do recorte temporal e trabalhos sem aderência ao tema investigado.
-      </div>
-    </section>
+      const saveFn = () => {
+        const value = el.tagName === 'TEXTAREA' ? el.value : el.textContent;
+        localStorage.setItem(key, value);
+      };
 
-    <section class="card p-6">
-      <h2 class="sec-title mb-4">5. Resultados e discussão</h2>
-      <p class="literata text-[15px] leading-8">
-        O que hoje aparece como “Desenvolvimento”, especialmente os itens 2.1, 2.2 e 2.3, pode ser aproveitado, mas precisa ser redistribuído. A parte que descreve o que a literatura mostra sobre ensino de Anatomia, tecnologias digitais e aplicações da IA pode virar <strong>Resultados</strong>. Já a parte interpretativa, em que se analisam os benefícios, limites, desafios e implicações, deve ser deslocada para <strong>Discussão</strong>.
-      </p>
-      <p class="literata text-[15px] leading-8 mt-3">
-        Também considero que o texto, nessa parte, ainda está muito descritivo. A Rafaela explica bem os conceitos, mas precisa dialogar mais diretamente com os estudos citados, mostrando o que cada autor encontrou, em vez de apenas citar ao final do parágrafo.
-      </p>
+      el.addEventListener('input', saveFn);
+      el.addEventListener('blur', saveFn);
+    });
 
-      <h3 class="font-bold text-slate-700 mt-5 mb-2">Amostra de como ela pode começar os resultados</h3>
-      <div class="sample literata text-sm">
-Os estudos analisados indicam que a Inteligência Artificial tem sido aplicada ao ensino de Anatomia e Histologia em diferentes frentes, incluindo plataformas adaptativas, tutores virtuais, modelos tridimensionais inteligentes e sistemas automatizados de análise de imagens. Em conjunto, essas aplicações são descritas na literatura como ferramentas capazes de favorecer a visualização espacial, a personalização da aprendizagem e o acompanhamento do desempenho discente⁴˒⁵.
-      </div>
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      if(confirm('Deseja limpar todos os textos editáveis salvos neste navegador?')){
+        STORAGE_KEYS.forEach(k => localStorage.removeItem(k));
+        location.reload();
+      }
+    });
 
-      <h3 class="font-bold text-slate-700 mt-5 mb-2">Amostra de como ela pode iniciar a discussão</h3>
-      <div class="sample literata text-sm">
-Embora os achados apontem benefícios educacionais relevantes, a literatura também destaca limites importantes relacionados à infraestrutura, à formação docente e ao uso ético dessas tecnologias. Isso sugere que a incorporação da Inteligência Artificial no ensino morfológico não deve ser entendida como simples substituição de métodos tradicionais, mas como estratégia complementar que exige planejamento pedagógico e análise crítica⁶.
-      </div>
-    </section>
-
-    <section class="card p-6">
-      <h2 class="sec-title mb-4">6. Conclusões</h2>
-      <p class="literata text-[15px] leading-8">
-        A conclusão da Rafaela está coerente com o tema, mas ainda pode ficar mais direta. O ideal é que ela responda ao objetivo do estudo, sintetize os principais achados e feche o texto sem repetir em excesso o que já foi dito na introdução. Também seria importante mencionar, ainda que brevemente, as limitações da própria revisão e indicar caminhos para pesquisas futuras.
-      </p>
-      <p class="literata text-[15px] leading-8 mt-3">
-        Eu orientaria a autora a manter a conclusão mais curta, mais objetiva e mais conectada ao objetivo central do manuscrito.
-      </p>
-    </section>
-
-    <section class="card p-6">
-      <h2 class="sec-title mb-4">7. Citações e referências</h2>
-      <div class="callout-red rounded-xl p-4 mb-4">
-        <p class="font-bold text-red-800 mb-2">Ponto crítico</p>
-        <p class="literata text-sm leading-7">
-          Aqui está um dos principais problemas formais do manuscrito. Embora parte das referências esteja em sobrescrito, o texto mistura sistema autor-data com numeração. Além disso, em alguns pontos há espaço antes do número sobrescrito, o que não está de acordo com a norma da revista.
-        </p>
-      </div>
-
-      <p class="literata text-[15px] leading-8">
-        Na RBEM, a forma correta é usar apenas o padrão Vancouver numérico sobrescrito, sem parênteses, sem espaço antes do número e com a lista final organizada por ordem de aparecimento no texto. No manuscrito, aparecem nomes como “Boff et al. (2020)” e “Xavier et al. (2025)”, e isso precisa ser retirado.
-      </p>
-
-      <div class="grid md:grid-cols-2 gap-4 mt-4">
-        <div class="bg-red-50 border border-red-200 rounded-xl p-4">
-          <p class="font-bold text-red-800 mb-2">Errado</p>
-          <p class="literata text-sm">Boff et al. (2020)</p>
-          <p class="literata text-sm">anatomia ¹</p>
-        </div>
-        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-          <p class="font-bold text-emerald-800 mb-2">Correto</p>
-          <p class="literata text-sm">O uso de tecnologias digitais favorece a aprendizagem anatômica³.</p>
-          <p class="literata text-sm">Estudos recentes apontam benefícios³,¹¹.</p>
-        </div>
-      </div>
-
-      <p class="literata text-[15px] leading-8 mt-4">
-        Outro ponto importante é que, embora as referências existam, nem todas estão sendo usadas da forma mais precisa possível no corpo do texto. Em alguns trechos, a autora usa uma referência real para sustentar uma afirmação mais ampla do que o estudo parece de fato cobrir. Isso precisa ser revisto na versão final.
-      </p>
-    </section>
-
-    <section class="card p-6">
-      <h2 class="sec-title mb-4">8. Referências em ordem sugerida de aparecimento</h2>
-      <p class="literata text-[15px] leading-8">
-        Considerando a reorganização do artigo, esta é uma ordem sugerida para a lista de referências no padrão Vancouver. Depois, isso ainda precisa ser conferido exatamente com a ordem definitiva em que as citações irão aparecer no texto reescrito.
-      </p>
-
-      <div class="mt-4 space-y-3 literata text-sm leading-7">
-        <div class="border border-slate-200 rounded-xl p-4">1. Souza JPN. Tendências investigativas contemporâneas no ensino-aprendizagem de anatomia humana no Brasil. Rev Bras Educ Med. 2024;48(2):e055.</div>
-        <div class="border border-slate-200 rounded-xl p-4">2. Boff TC, et al. O uso da tecnologia no ensino da anatomia humana: revisão sistemática da literatura de 2017 a 2020. Medicina (Ribeirão Preto). 2020;53(4):447-455.</div>
-        <div class="border border-slate-200 rounded-xl p-4">3. Xavier SPS, et al. Uso da Tecnologia no Ensino da Anatomia Humana: Uma Overview. Rev Estud Interdiscip. 2025;7(2):1-14.</div>
-        <div class="border border-slate-200 rounded-xl p-4">4. Costa RDA, Santos AMV, Lopes PTC. Metodologias ativas com tecnologias digitais de informação e comunicação no ensino e aprendizagem de anatomia humana. Cuad Educ Desarro. 2023;15(10):11054-11072.</div>
-        <div class="border border-slate-200 rounded-xl p-4">5. Ribeiro IAL, et al. Metodologias de Ensino de Anatomia Humana: Revisão Integrativa. Rev Enferm Atual In Derme. 2024;98(3).</div>
-        <div class="border border-slate-200 rounded-xl p-4">6. Roncato PA, et al. Uso de tecnologias no ensino de anatomia humana em cursos da saúde. Res Soc Dev. 2022;11(16):e520111638426.</div>
-        <div class="border border-slate-200 rounded-xl p-4">7. Santos AJC, et al. A revolução da inteligência artificial na interpretação anatômica: transformações no ensino e na prática médica. Biosciences and Health. 2024;2:1-7.</div>
-        <div class="border border-slate-200 rounded-xl p-4">8. Abadia HR, et al. Inteligência Artificial Otimizando Práticas Médicas Com Enfoque Na Anatomia Humana. Epitaya E-books. 2024;1(60):35-48.</div>
-        <div class="border border-slate-200 rounded-xl p-4">9. Rosa BB, et al. Metodologias de ensino aplicadas à Anatomia Humana: uma revisão narrativa. Rev Delos. 2025;18(71):e6856.</div>
-        <div class="border border-slate-200 rounded-xl p-4">10. Lucena JD, et al. Uso de modelo anatômico de baixo custo de articulação intervertebral no ensino de anatomia do aparelho locomotor. Cad Pedagógico. 2025;22(5):e14860.</div>
-        <div class="border border-slate-200 rounded-xl p-4">11. Andrade JCT, et al. Uso de Metodologia Ativa no Ensino de Anatomia Humana. Rev Geopolítica. 2026;17(1):e1235.</div>
-      </div>
-
-      <div class="callout-blue rounded-xl p-4 mt-4">
-        <p class="literata text-sm leading-7">
-          Minha observação aqui é que a referência 11 existe, mas é a mais sensível editorialmente, porque está em um periódico de escopo menos esperado para a área. Se houver possibilidade, vale substituí-la por artigo mais diretamente ligado à educação médica ou ao ensino de anatomia.
-        </p>
-      </div>
-    </section>
-
-    <section class="card p-6">
-      <h2 class="sec-title mb-4">9. Minha conclusão final como avaliadora</h2>
-      <p class="literata text-[15px] leading-8">
-        Eu considero que o artigo da Rafaela está <strong>bom em conteúdo</strong> e que a nota <strong>8,0</strong> é adequada. O texto mostra leitura, organização temática e esforço de discutir um assunto relevante e atual. Ao mesmo tempo, ainda existem ajustes importantes para que o manuscrito fique realmente pronto para a RBEM.
-      </p>
-      <p class="literata text-[15px] leading-8 mt-3">
-        Portanto, minha avaliação é a seguinte: o trabalho tem mérito, merece reconhecimento e tem potencial de aproveitamento, mas ainda precisa passar por uma etapa de conversão de TCC para artigo científico. Com a reestruturação adequada, padronização das citações e reorganização das referências, ele poderá ficar muito mais consistente para submissão.
-      </p>
-    </section>
-
-    <section class="card p-6 no-print">
-      <h2 class="sec-title mb-4">10. Exportar</h2>
-      <p class="text-slate-600 mb-4">Clique abaixo para gerar PDF desta versão.</p>
-      <button onclick="window.print()" class="px-5 py-3 rounded-xl bg-[#0f2b46] text-white font-semibold hover:opacity-90 transition">
-        Gerar PDF
-      </button>
-    </section>
-
-  </main>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>
